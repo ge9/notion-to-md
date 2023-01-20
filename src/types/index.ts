@@ -53,7 +53,8 @@ export type Annotations = {
 };
 
 export type Text = {
-  type: "text";
+  type: "text" | "equation" | "mention";
+  mention: any
   text: {
     content: string;
     link: {

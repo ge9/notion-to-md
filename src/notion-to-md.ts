@@ -178,7 +178,7 @@ export class NotionToMarkdown {
       }
 
       case "equation": {
-        return md.codeBlock(block.equation.expression);
+        return '$$'+block.equation.expression+'$$';
       }
 
       case "video":
@@ -328,7 +328,7 @@ export class NotionToMarkdown {
         const toggle_children_md_string =
           this.toMarkdownString(toggle_children);
 
-        return md.toggle(toggle_summary, toggle_children_md_string);
+        return md.toggle(toggle_summary, toggle_children_md_string, block.toggle.color);
       }
       // Rest of the types
       // "paragraph"
@@ -360,11 +360,15 @@ export class NotionToMarkdown {
         blockContent.map((content: Text) => {
           const annotations = content.annotations;
           let plain_text = content.plain_text;
-
+          if (content.type == 'equation') plain_text = "$"+plain_text+"$";
+          if (content.type == "mention" && content.mention.type == 'page') plain_text = "M_menti_A"+content.mention.page.id+"M_menti_Z";
+          if (type != "code" && content.type == "text") plain_text = 
+              plain_text.replace(/\\/g, "\\\\").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\$/g, "\\$").replace(/\*/g, "\\*")
+                        .replace(/\+/g, "\\+").replace(/-/g, "\\-").replace(/'/g, "M_squo_M").replace(/\]/g, "M_cbrack_M").replace(/\[/g, "M_obrack_M")
           plain_text = this.annotatePlainText(plain_text, annotations);
 
           if (content["href"])
-            plain_text = md.link(plain_text, content["href"]);
+            plain_text = md.link(plain_text, content["href"].replace(/\(/g, "\\(").replace(/\)/g, "\\)"));
 
           parsedData += plain_text;
         });

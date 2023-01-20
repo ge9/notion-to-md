@@ -10,7 +10,7 @@ export const bold = (text: string) => {
 };
 
 export const italic = (text: string) => {
-  return `_${text}_`;
+  return `*${text}*`;
 };
 
 export const strikethrough = (text: string) => {
@@ -88,14 +88,15 @@ export const divider = () => {
   return "---";
 };
 
-export const toggle = (summary?: string, children?: string) => {
+export const toggle = (summary?: string, children?: string, color?: string) => {
   if (!summary) return children || "";
-  return `<details>
-  <summary>${summary}</summary>
+  return `<div class="mw-collapsible ${ color=="yellow_background" ? "" : "mw-collapsed" }" style="overflow:auto;width: 100%; max-width: 1200px; white-space:nowrap; border:1px solid; padding:3px;">
+<div>${summary}</div>
+<div class="mw-collapsible-content">
 
-${children || ""}
+  ${children || ""}
 
-  </details>`;
+</div></div>`;
 };
 
 export const table = (cells: string[][]) => {
